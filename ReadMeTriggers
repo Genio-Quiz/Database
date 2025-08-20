@@ -1,0 +1,46 @@
+⚡ Triggers a serem implementadas
+
+As triggers terão como objetivo garantir validações automáticas e evitar erros de consistência no banco de dados do sistema Quiz.
+Assim, o backend não precisa se preocupar com regras básicas de integridade, e os dados ficam mais confiáveis.
+
+✅ Triggers Essenciais (Validação e Regras de Negócio)
+
+Usuários – Prevenir apelido/email duplicado
+Evitar inserção de usuários com email ou apelido já existentes.
+
+Resultados – Garantir pontuação válida
+Impedir que sejam salvos resultados com pontuacao < 0 ou tempo_segundos < 0.
+
+Resultados – Limite de pontuação
+Não permitir que a pontuação seja maior que o total de questões do questionário.
+
+Alternativas – Apenas uma correta por questão
+Impedir que mais de uma alternativa da mesma questão seja marcada como correta.
+
+Questões – Disciplina obrigatória
+Validar que toda questão esteja vinculada a uma disciplina.
+
+Questões – Enunciado obrigatório
+Bloquear inserção de questões com enunciado vazio ou nulo.
+
+📊 Triggers de Consistência e Auditoria
+
+Disciplina – Nome único
+Garantir que não existam disciplinas duplicadas.
+
+Curso – Nome único
+Garantir que não existam cursos duplicados.
+
+Usuários – Senha obrigatória
+Bloquear cadastro de usuários sem senha definida.
+
+Logs – Auditoria de alterações
+Criar uma tabela de log para registrar automaticamente:
+
+Alterações de senha
+
+Exclusão de usuários
+
+Alterações manuais de pontuação
+
+👉 Com essas triggers, o banco passa a cuidar sozinho de validações críticas e consistência de dados, liberando o backend para focar apenas na lógica de negócio.
