@@ -26,12 +26,12 @@ DROP TABLE IF EXISTS `alternativas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `alternativas` (
   `idAlternativa` int NOT NULL AUTO_INCREMENT,
-  `resposta` varchar(100) NOT NULL,
-  `estaCorreta` tinyint(1) NOT NULL DEFAULT '0',
-  `idQuestao` int DEFAULT NULL,
+  `texto` varchar(255) NOT NULL,
+  `estaCorreta` tinyint NOT NULL DEFAULT '0',
+  `idQuestao` int NOT NULL,
   PRIMARY KEY (`idAlternativa`),
-  KEY `fk_alternativa_questao` (`idQuestao`),
-  CONSTRAINT `fk_alternativa_questao` FOREIGN KEY (`idQuestao`) REFERENCES `questoes` (`idQuestao`)
+  KEY `FK_8b71b4dbda900f09fa4f459b492` (`idQuestao`),
+  CONSTRAINT `FK_8b71b4dbda900f09fa4f459b492` FOREIGN KEY (`idQuestao`) REFERENCES `questoes` (`idQuestao`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -79,8 +79,8 @@ CREATE TABLE `disciplina` (
   `nome` varchar(20) NOT NULL,
   `idCurso` int NOT NULL,
   PRIMARY KEY (`idDisciplina`),
-  KEY `fk_disciplina_curso` (`idCurso`),
-  CONSTRAINT `fk_disciplina_curso` FOREIGN KEY (`idCurso`) REFERENCES `curso` (`idCurso`)
+  KEY `FK_2645acc90d7f4141357ae25f14b` (`idCurso`),
+  CONSTRAINT `FK_2645acc90d7f4141357ae25f14b` FOREIGN KEY (`idCurso`) REFERENCES `curso` (`idCurso`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -102,10 +102,11 @@ DROP TABLE IF EXISTS `questionario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `questionario` (
   `idQuestionario` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
   `idDisciplina` int NOT NULL,
   PRIMARY KEY (`idQuestionario`),
-  KEY `fk_questionario_disciplina` (`idDisciplina`),
-  CONSTRAINT `fk_questionario_disciplina` FOREIGN KEY (`idDisciplina`) REFERENCES `disciplina` (`idDisciplina`)
+  KEY `FK_131e26ffd533e2d1f10666fe41a` (`idDisciplina`),
+  CONSTRAINT `FK_131e26ffd533e2d1f10666fe41a` FOREIGN KEY (`idDisciplina`) REFERENCES `disciplina` (`idDisciplina`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -131,8 +132,8 @@ CREATE TABLE `questoes` (
   `enunciado` varchar(255) NOT NULL,
   `idDisciplina` int DEFAULT NULL,
   PRIMARY KEY (`idQuestao`),
-  KEY `fk_questao_disciplina` (`idDisciplina`),
-  CONSTRAINT `fk_questao_disciplina` FOREIGN KEY (`idDisciplina`) REFERENCES `disciplina` (`idDisciplina`)
+  KEY `FK_40f1277dbe28c1ed240c37edbb5` (`idDisciplina`),
+  CONSTRAINT `FK_40f1277dbe28c1ed240c37edbb5` FOREIGN KEY (`idDisciplina`) REFERENCES `disciplina` (`idDisciplina`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -154,16 +155,15 @@ DROP TABLE IF EXISTS `resultado`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `resultado` (
   `idResultado` int NOT NULL AUTO_INCREMENT,
+  `tempoSegundos` int NOT NULL DEFAULT '0',
+  `dataExecucao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `idUsuario` int NOT NULL,
   `idQuestionario` int NOT NULL,
-  `pontuacao` int NOT NULL DEFAULT '0',
-  `tempo_segundos` int NOT NULL,
-  `dataExecucao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idResultado`),
-  KEY `fk_resultado_usuario` (`idUsuario`),
-  KEY `fk_resultado_questionario` (`idQuestionario`),
-  CONSTRAINT `fk_resultado_questionario` FOREIGN KEY (`idQuestionario`) REFERENCES `questionario` (`idQuestionario`),
-  CONSTRAINT `fk_resultado_usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`)
+  KEY `FK_99020ec316d0e2bd895e751b276` (`idUsuario`),
+  KEY `FK_580d0386202c551a9498e25cb89` (`idQuestionario`),
+  CONSTRAINT `FK_580d0386202c551a9498e25cb89` FOREIGN KEY (`idQuestionario`) REFERENCES `questionario` (`idQuestionario`) ON DELETE CASCADE,
+  CONSTRAINT `FK_99020ec316d0e2bd895e751b276` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,12 +188,13 @@ CREATE TABLE `usuarios` (
   `email` varchar(50) NOT NULL,
   `apelido` varchar(20) NOT NULL,
   `senha` varchar(255) NOT NULL,
-  `administrador` tinyint(1) DEFAULT '0',
+  `admin` tinyint NOT NULL DEFAULT '0',
   `pontuacao` int NOT NULL DEFAULT '0',
-  `criadoEm` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `criadoEm` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idUsuario`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `apelido` (`apelido`)
+  UNIQUE KEY `IDX_446adfc18b35418aac32ae0b7b` (`email`),
+  UNIQUE KEY `IDX_53e4306997d1df791f4db3245b` (`apelido`),
+  UNIQUE KEY `IDX_0ffa236b3322ba9262d56936bb` (`email`,`apelido`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -215,4 +216,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-19 17:51:36
+-- Dump completed on 2025-08-22 17:23:20
