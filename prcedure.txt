@@ -1,0 +1,88 @@
+DELIMITER //
+
+CREATE PROCEDURE RegistrarResultQuestionario(
+    IN p_idUsuario INT,
+    IN p_idQuestionario INT,
+    IN p_tempoSegundos INT,
+    IN p_pontuacaoObtida INT
+)
+BEGIN
+    INSERT INTO resultado (tempoSegundos, idUsuario, idQuestionario)
+    VALUES (p_tempoSegundos, p_idUsuario, p_idQuestionario);
+
+    UPDATE usuarios
+    SET pontuacao = pontuacao + p_pontuacaoObtida
+    WHERE idUsuario = p_idUsuario;
+END //
+
+DELIMITER ;
+
+DROP TABLE IF EXISTS `disciplina`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `disciplina` (
+  `idDisciplina` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(20) NOT NULL,
+  `idCurso` int NOT NULL,
+  PRIMARY KEY (`idDisciplina`),
+  KEY `FK_2645acc90d7f4141357ae25f14b` (`idCurso`),
+  CONSTRAINT `FK_2645acc90d7f4141357ae25f14b` FOREIGN KEY (`idCurso`) REFERENCES `curso` (`idCurso`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Criação da tabela simples para log
+CREATE TABLE IF NOT EXISTS `disciplina_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `acao` varchar(10) NOT NULL,
+  `idDisciplina` int DEFAULT NULL,
+  `nome` varchar(20) DEFAULT NULL,
+  `idCurso` int DEFAULT NULL,
+  `data_acao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Trigger para logar inserções na tabela disciplina
+DELIMITER $$
+CREATE TRIGGER `log_after_insert_disciplina`
+AFTER INSERT ON `disciplina`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `disciplina_log` (`acao`, `idDisciplina`, `nome`, `idCurso`)
+  VALUES ('INSERT', NEW.idDisciplina, NEW.nome, NEW.idCurso);
+END$$
+DELIMITER ;
+
+=======================================================
+
+DROP TABLE IF EXISTS `curso`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `curso` (
+  `idCurso` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(30) NOT NULL,
+  PRIMARY KEY (`idCurso`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Criação da tabela simples para log
+CREATE TABLE IF NOT EXISTS `curso_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `acao` varchar(10) NOT NULL,
+  `idCurso` int DEFAULT NULL,
+  `nome` varchar(30) DEFAULT NULL,
+  `data_acao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Trigger para logar inserções na tabela curso
+DELIMITER $$
+CREATE TRIGGER `log_after_insert_curso`
+AFTER INSERT ON `curso`
+FOR EACH ROW
+BEGIN
+  INSERT INTO `curso_log` (`acao`, `idCurso`, `nome`)
+  VALUES ('INSERT', NEW.idCurso, NEW.nome);
+END$$
+DELIMITER ;
+
+
