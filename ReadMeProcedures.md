@@ -9,7 +9,7 @@ Cadastro de Usuário (Inserir novo usuário, validando email e apelido.)
 
 Criação de Questão com Alternativas (Inserir uma questão e já vincular suas alternativas.)
 
-Registrar Resultado de Questionário (Guardar a pontuação obtida, tempo de execução e atualizar o score acumulado do usuário.)
+Registrar Resultado de Questionário (Guardar a pontuação obtida, tempo de execução e atualizar o score acumulado do usuário.) ✅
 
 📊 Consultas e Relatórios
 
