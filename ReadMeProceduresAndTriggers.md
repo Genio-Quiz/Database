@@ -27,10 +27,10 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Ranking Geral de Usuários | Retornar os Top N usuários em ordem de pontuação. | ⏳ (Ariel) |
 | Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ❌ |
 | Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ❌ |
-| Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ⌛ (Lucas) |
+| Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ✅ (Lucas) |
 | Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ❌ |
 | Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ⌛ (Gabriel K.) |
-| Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ⌛ (Lucas) |
+| Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ✅ (Lucas) |
 | Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ❌ |
 
 ---
