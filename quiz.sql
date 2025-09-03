@@ -206,6 +206,66 @@ LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `respostas_usuario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `respostas_usuario` (
+  `idResposta` int NOT NULL AUTO_INCREMENT,
+  `idUsuario` int NOT NULL,
+  `idQuestao` int NOT NULL,
+  `idAlternativa` int NOT NULL,
+  `correta` tinyint NOT NULL DEFAULT '0',
+  `idResultado` int NOT NULL,
+  PRIMARY KEY (`idResposta`),
+  KEY `FK_respostas_usuario_idUsuario` (`idUsuario`),
+  KEY `FK_respostas_usuario_idQuestao` (`idQuestao`),
+  KEY `FK_respostas_usuario_idAlternativa` (`idAlternativa`),
+  KEY `FK_respostas_usuario_idResultado` (`idResultado`),
+  CONSTRAINT `FK_respostas_usuario_idUsuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE,
+  CONSTRAINT `FK_respostas_usuario_idQuestao` FOREIGN KEY (`idQuestao`) REFERENCES `questoes` (`idQuestao`) ON DELETE CASCADE,
+  CONSTRAINT `FK_respostas_usuario_idAlternativa` FOREIGN KEY (`idAlternativa`) REFERENCES `alternativas` (`idAlternativa`) ON DELETE CASCADE,
+  CONSTRAINT `FK_respostas_usuario_idResultado` FOREIGN KEY (`idResultado`) REFERENCES `resultado` (`idResultado`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `respostas_usuario` WRITE;
+/*!40000 ALTER TABLE `respostas_usuario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `respostas_usuario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS HistoricoResultadosUsuario;
+
+CREATE PROCEDURE HistoricoResultadosUsuario(IN p_idUsuario INT)
+BEGIN
+    SELECT r.dataExecucao AS data,
+           (SELECT COUNT(*) FROM respostas_usuario ru WHERE ru.idResultado = r.idResultado AND ru.correta = 1) AS pontuacao,
+           r.tempoSegundos AS tempo,
+           q.nome AS questionario
+    FROM resultado r
+    JOIN questionario q ON r.idQuestionario = q.idQuestionario
+    WHERE r.idUsuario = p_idUsuario
+    ORDER BY r.dataExecucao DESC;
+END //
+
+DROP PROCEDURE IF EXISTS TopQuestoesRevisao;
+
+CREATE PROCEDURE TopQuestoesRevisao()
+BEGIN
+    SELECT q.idQuestao,
+           q.enunciado,
+           COUNT(ru.idResposta) AS vezes_errada
+    FROM questoes q
+    JOIN respostas_usuario ru ON q.idQuestao = ru.idQuestao AND ru.correta = 0
+    GROUP BY q.idQuestao, q.enunciado
+    ORDER BY vezes_errada DESC
+    LIMIT 10;
+END //
+
+DELIMITER ;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
