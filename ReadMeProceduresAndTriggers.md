@@ -16,7 +16,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 
 | Procedure | Descrição | Status |
 |-----------|-----------|--------|
-| Registrar Resultado de Questionário | Guardar pontuação obtida, tempo de execução e atualizar score acumulado do usuário. | ✅ |
+| Registrar Resultado de Questionário | Guardar pontuação obtida, tempo de execução e atualizar score acumulado do usuário. | ✅ (Samuel) |
 
 ---
 
@@ -40,7 +40,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Trigger | Função | Status |
 |---------|--------|--------|
 | Resultados – Garantir Pontuação Válida | Impedir resultados com `pontuacao < 0` ou `tempo_segundos < 0`. | ❌ |
-| Logs – Auditoria de Alterações | Rastrear alterações críticas (ex.: exclusão de usuários, atualizações de score). | ✅ |
+| Logs – Auditoria de Alterações | Rastrear alterações críticas (ex.: exclusão de usuários, atualizações de score). | ✅ (Rone) |
 | Alterações Manuais de Pontuação | Prevenir ou auditar mudanças diretas no score acumulado. | ❌ |
 
 ---
