@@ -1,35 +1,47 @@
-📌 Procedures a serem implementadas 
+# 📌 Procedures e Triggers – Banco de Dados do Quiz  
 
-Legenda: ✅ = Realizado. ⌛ = Em andamento. ❌ = Nao iniciado.
+**Legenda de Status**  
+- ✅ Concluído  
+- ⌛ Em andamento  
+- ❌ Não iniciado  
 
-Este documento lista as procedures planejadas para o banco de dados do quiz.
-O objetivo é facilitar operações comuns de cadastro, consulta e relatórios de desempenho.
+Este documento descreve as **procedures** e **triggers** planejadas para o banco de dados do sistema de quiz.  
+O objetivo é **padronizar operações comuns** (cadastro, consulta e relatórios de desempenho) e **garantir regras de negócio** via triggers.  
 
-🔧 Operações de Cadastro e Atualização❌
+---
 
-Registrar Resultado de Questionário (Guardar a pontuação obtida, tempo de execução e atualizar o score acumulado do usuário.) ✅
+## 🔹 Procedures
 
-📊 Consultas e Relatórios
+### 📥 Registro de Resultados  
 
-Ranking Geral de Usuários (Retornar os Top N usuários em ordem de pontuação.)❌
+| Procedure | Descrição | Status |
+|-----------|-----------|--------|
+| Registrar Resultado de Questionário | Guardar pontuação obtida, tempo de execução e atualizar score acumulado do usuário. | ✅ |
 
-Ranking por Disciplina (Retornar os usuários com maior pontuação dentro de uma disciplina específica.)❌
+---
 
-Histórico de Resultados de um Usuário (Listar todas as execuções de quizzes feitas por um usuário, com data, pontuação e tempo.)⌛ (Lucas)
+### 📊 Consultas e Relatórios  
 
-Média de Pontuação por Usuário (Calcular a média de pontos que o usuário obtém nos questionários.)❌
+| Procedure | Descrição | Status |
+|-----------|-----------|--------|
+| Ranking Geral de Usuários | Retornar os Top N usuários em ordem de pontuação. | ❌ |
+| Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ❌ |
+| Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ⌛ (Lucas) |
+| Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ❌ |
+| Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ❌ |
+| Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ⌛ (Lucas) |
+| Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ❌ |
 
-Média de Pontuação por Disciplina (Descobrir quais disciplinas apresentam maior ou menor desempenho médio.)❌
+---
 
-Top Questões de Revisão (Identificar as questões mais erradas para sugerir revisão.)⌛ (Lucas)
+## 🔹 Triggers Essenciais (Validação e Regras de Negócio)
 
-Melhor Resultado do Usuário em Cada Disciplina (Mostrar a maior pontuação já alcançada por um usuário em cada disciplina.)❌
+| Trigger | Função | Status |
+|---------|--------|--------|
+| Resultados – Garantir Pontuação Válida | Impedir resultados com `pontuacao < 0` ou `tempo_segundos < 0`. | ❌ |
+| Logs – Auditoria de Alterações | Rastrear alterações críticas (ex.: exclusão de usuários, atualizações de score). | ✅ |
+| Alterações Manuais de Pontuação | Prevenir ou auditar mudanças diretas no score acumulado. | ❌ |
 
+---
 
-👉 Com esse conjunto de procedures, o sistema terá suporte para:
-
-Cadastro e manutenção de dados
-
-Consultas operacionais para o jogo
-
-Relatórios e estatísticas de desempenho
+📌 **Observação:** Este documento deve ser atualizado conforme novas procedures/triggers forem implementadas ou alteradas.  
