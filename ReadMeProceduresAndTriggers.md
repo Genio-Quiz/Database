@@ -24,7 +24,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 
 | Procedure | Descrição | Status |
 |-----------|-----------|--------|
-| Ranking Geral de Usuários | Retornar os Top N usuários em ordem de pontuação. | ❌ |
+| Ranking Geral de Usuários | Retornar os Top N usuários em ordem de pontuação. | ⏳ (Ariel) |
 | Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ❌ |
 | Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ⌛ (Lucas) |
 | Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ❌ |
