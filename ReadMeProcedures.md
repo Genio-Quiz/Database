@@ -1,4 +1,6 @@
-📌 Procedures a serem implementadas
+📌 Procedures a serem implementadas 
+
+Legenda: ✅ = Realizado. ⌛ = Em andamento. ❌ = Nao iniciado.
 
 Este documento lista as procedures planejadas para o banco de dados do quiz.
 O objetivo é facilitar operações comuns de cadastro, consulta e relatórios de desempenho.
