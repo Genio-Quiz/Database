@@ -29,7 +29,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ❌ |
 | Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ⌛ (Lucas) |
 | Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ❌ |
-| Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ❌ |
+| Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ⌛ (Gabriel K.) |
 | Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ⌛ (Lucas) |
 | Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ❌ |
 
@@ -41,7 +41,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 |---------|--------|--------|
 | Resultados – Garantir Pontuação Válida | Impedir resultados com `pontuacao < 0` ou `tempo_segundos < 0`. | ❌ |
 | Logs – Auditoria de Alterações | Rastrear alterações críticas (ex.: exclusão de usuários, atualizações de score). | ✅ (Rone) |
-| Alterações Manuais de Pontuação | Prevenir ou auditar mudanças diretas no score acumulado. | ❌ |
+| Alterações Manuais de Pontuação | Prevenir ou auditar mudanças diretas no score acumulado. | ⌛ (Gabriel K.) |
 
 ---
 
