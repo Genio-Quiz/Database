@@ -15,13 +15,13 @@ Ranking Geral de Usuários (Retornar os Top N usuários em ordem de pontuação.
 
 Ranking por Disciplina (Retornar os usuários com maior pontuação dentro de uma disciplina específica.)❌
 
-Histórico de Resultados de um Usuário (Listar todas as execuções de quizzes feitas por um usuário, com data, pontuação e tempo.)⌛
+Histórico de Resultados de um Usuário (Listar todas as execuções de quizzes feitas por um usuário, com data, pontuação e tempo.)⌛ (Lucas)
 
 Média de Pontuação por Usuário (Calcular a média de pontos que o usuário obtém nos questionários.)❌
 
 Média de Pontuação por Disciplina (Descobrir quais disciplinas apresentam maior ou menor desempenho médio.)❌
 
-Top Questões de Revisão (Identificar as questões mais erradas para sugerir revisão.)⌛
+Top Questões de Revisão (Identificar as questões mais erradas para sugerir revisão.)⌛ (Lucas)
 
 Melhor Resultado do Usuário em Cada Disciplina (Mostrar a maior pontuação já alcançada por um usuário em cada disciplina.)❌
 
