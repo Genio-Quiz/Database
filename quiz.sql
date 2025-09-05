@@ -133,23 +133,26 @@ CREATE TABLE respostas_usuario (
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS HistoricoResultadosUsuario;
+DROP PROCEDURE IF EXISTS HistoricoResultadosUsuario //
+
 CREATE PROCEDURE HistoricoResultadosUsuario(IN p_idUsuario INT)
 BEGIN
     SELECT 
         r.dataExecucao AS data,
-        (SELECT COUNT(*) 
-         FROM respostas_usuario ru 
-         WHERE ru.idResultado = r.idResultado AND ru.correta = 1) AS pontuacao,
+        COUNT(CASE WHEN ru.correta = 1 THEN 1 END) AS pontuacao,
         r.tempoSegundos AS tempo,
         q.nome AS questionario
     FROM resultado r
     JOIN questionario q ON r.idQuestionario = q.idQuestionario
+    LEFT JOIN respostas_usuario ru ON ru.idResultado = r.idResultado
     WHERE r.idUsuario = p_idUsuario
+    GROUP BY r.idResultado, r.dataExecucao, r.tempoSegundos, q.nome
     ORDER BY r.dataExecucao DESC;
 END //
 
-DROP PROCEDURE IF EXISTS TopQuestoesRevisao;
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS TopQuestoesRevisao //
 CREATE PROCEDURE TopQuestoesRevisao()
 BEGIN
     SELECT 
@@ -157,13 +160,17 @@ BEGIN
         q.enunciado,
         COUNT(ru.idResposta) AS vezes_errada
     FROM questoes q
-    JOIN respostas_usuario ru ON q.idQuestao = ru.idQuestao AND ru.correta = 0
+    JOIN respostas_usuario ru 
+        ON q.idQuestao = ru.idQuestao 
+       AND ru.correta = 0
     GROUP BY q.idQuestao, q.enunciado
     ORDER BY vezes_errada DESC
     LIMIT 10;
 END //
 
-DROP PROCEDURE IF EXISTS RegistrarResultQuestionario;
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS RegistrarResultQuestionario //
 CREATE PROCEDURE RegistrarResultQuestionario(
     IN p_idUsuario INT,
     IN p_idQuestionario INT,
