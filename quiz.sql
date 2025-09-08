@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS disciplina;
 
 CREATE TABLE disciplina (
   idDisciplina INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(20) NOT NULL,
+  nome VARCHAR(50) NOT NULL,
   idCurso INT NOT NULL,
   CONSTRAINT FK_disciplina_curso FOREIGN KEY (idCurso) REFERENCES curso (idCurso) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -43,7 +43,7 @@ CREATE TABLE disciplina_log (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   acao VARCHAR(10) NOT NULL,
   idDisciplina INT DEFAULT NULL,
-  nome VARCHAR(20) DEFAULT NULL,
+  nome VARCHAR(50) DEFAULT NULL,
   idCurso INT DEFAULT NULL,
   data_acao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -184,6 +184,23 @@ BEGIN
     UPDATE usuarios
     SET pontuacao = pontuacao + p_pontuacaoObtida
     WHERE idUsuario = p_idUsuario;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+
+ALTER TABLE questionario
+ADD COLUMN click INT NOT NULL DEFAULT 0;
+
+
+DROP PROCEDURE IF EXISTS IncrementarClickQuestionario //
+CREATE PROCEDURE IncrementarClickQuestionario(IN p_idQuestionario INT)
+BEGIN
+    UPDATE questionario
+    SET click = click + 1
+    WHERE idQuestionario = p_idQuestionario;
 END //
 
 DELIMITER ;
