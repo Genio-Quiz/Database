@@ -204,3 +204,15 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS AlterarSenha //
+CREATE PROCEDURE AlterarSenha(IN p_idUsuario INT, IN p_novaSenha VARCHAR(255))
+BEGIN
+    UPDATE usuarios
+    SET senha = p_novaSenha
+    WHERE idUsuario = p_idUsuario;
+END //
+
+DELIMITER ;
