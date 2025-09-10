@@ -216,3 +216,11 @@ BEGIN
 END //
 
 DELIMITER ;
+
+CREATE OR REPLACE VIEW ranking AS
+SELECT 
+    u.idUsuario,
+    u.pontuacao,
+    RANK() OVER (ORDER BY u.pontuacao DESC) AS posicao
+FROM usuarios u order by posicao limit 10;
+
