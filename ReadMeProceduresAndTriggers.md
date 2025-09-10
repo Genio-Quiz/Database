@@ -25,7 +25,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Procedure | Descrição | Status |
 |-----------|-----------|--------|
 | Ranking Geral de Usuários | Retornar os Top N usuários em ordem de pontuação. | ✅ (Ariel) |
-| Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ❌ |
+| Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ⏳ (Ariel) |
 | Alterar senha | Pede uma nova senha e altera o campo senha de um usuario especifico. | ✅ (Lucas) |
 | Contador de clicks | Adicionar um campo click na tabela questionarios e uma procedure para aumentar em +1 esse contador | ✅ (Lucas) |
 | Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ⏳ (Samuel) |
