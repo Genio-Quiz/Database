@@ -41,7 +41,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 
 | Trigger | Função | Status |
 |---------|--------|--------|
-| Resultados – Garantir Pontuação Válida | Impedir resultados com `pontuacao < 0` ou `tempo_segundos < 0`. | ⌛ (Lucas) |
+| Resultados – Garantir Pontuação Válida | Impedir resultados com `pontuacao < 0`, `tempo_segundos < 0` ou `pontuacao > numero de questoes`. | ⌛ (Lucas) |
 | Logs – Auditoria de Alterações | Rastrear alterações críticas (ex.: exclusão de usuários, atualizações de score). | ✅ (Rone) |
 | Alterações Manuais de Pontuação | Prevenir ou auditar mudanças diretas no score acumulado. | ⌛ (Gabriel K.) |
 
