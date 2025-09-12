@@ -289,9 +289,9 @@ BEGIN
 
 
     UPDATE usuarios
-    SET pontuacao_geral = pontuacao_geral + (
+    SET pontuacao_geral = pontuacao_geral + COALESCE((
         SELECT SUM(correta) FROM respostas_usuario WHERE idResultado = NEW.idResultado
-    )
+    ), 0)
     WHERE idUsuario = NEW.idUsuario;
 END //
 
