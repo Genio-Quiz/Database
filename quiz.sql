@@ -274,11 +274,50 @@ END //
 
 DELIMITER ;
 
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS MelhorResultadoUsuarioPorDisciplina //
+
+CREATE PROCEDURE MelhorResultadoUsuarioPorDisciplina(IN p_idUsuario INT)
+BEGIN
+    -- Utiliza uma CTE (Common Table Expression) para primeiro calcular a pontuação de cada tentativa.
+    -- Isso organiza a consulta, tornando-a mais legível.
+    WITH PontuacaoPorResultado AS (
+        SELECT
+            idResultado,
+            -- Conta o número de acertos (onde correta = 1) para cada resultado.
+            COUNT(CASE WHEN correta = 1 THEN 1 END) AS pontuacao
+        FROM respostas_usuario
+        GROUP BY idResultado
+    )
+    -- A consulta principal junta as informações para apresentar o resultado final.
+    SELECT
+        u.apelido,
+        d.nome AS disciplina,
+        -- MAX() encontra a maior pontuação entre todas as tentativas do usuário na mesma disciplina.
+        MAX(pr.pontuacao) AS maior_pontuacao
+    FROM usuarios u
+    -- Junta as tabelas para conectar o usuário aos seus resultados, questionários e disciplinas.
+    JOIN resultado r ON u.idUsuario = r.idUsuario
+    JOIN PontuacaoPorResultado pr ON r.idResultado = pr.idResultado
+    JOIN questionario q ON r.idQuestionario = q.idQuestionario
+    JOIN disciplina d ON q.idDisciplina = d.idDisciplina
+    -- Filtra os resultados para o usuário específico passado como parâmetro.
+    WHERE u.idUsuario = p_idUsuario
+    -- Agrupa os dados para que a função MAX() funcione por disciplina.
+    GROUP BY u.apelido, d.nome
+    -- Ordena para mostrar as disciplinas com as maiores pontuações primeiro.
+    ORDER BY maior_pontuacao DESC;
+END //
+
+DELIMITER ;
+
 CREATE OR REPLACE VIEW ranking AS
 SELECT 
     u.idUsuario,
     u.pontuacao,
     RANK() OVER (ORDER BY u.pontuacao DESC) AS posicao
 FROM usuarios u order by posicao limit 10;
+
 
 
