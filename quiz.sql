@@ -92,6 +92,33 @@ CREATE TABLE usuarios (
   UNIQUE KEY IDX_apelido (apelido)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS usuarios_pontuacao_log (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  idUsuario INT NOT NULL,
+  pontuacao_antiga INT NOT NULL,
+  pontuacao_nova INT NOT NULL,
+  alterado_por VARCHAR(255),
+  data_acao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `idx_idUsuario` (`idUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS log_before_update_pontuacao_usuario //
+
+CREATE TRIGGER log_before_update_pontuacao_usuario
+BEFORE UPDATE ON usuarios
+FOR EACH ROW
+BEGIN
+    -- Verifica se o valor da coluna 'pontuacao' foi alterado.
+    IF OLD.pontuacao <> NEW.pontuacao THEN
+        -- Insere um registro na tabela de log com os detalhes da alteração.
+        INSERT INTO usuarios_pontuacao_log (idUsuario, pontuacao_antiga, pontuacao_nova, alterado_por)
+        VALUES (OLD.idUsuario, OLD.pontuacao, NEW.pontuacao, USER());
+    END IF;
+END //
+
+DELIMITER ;
 
 DROP TABLE IF EXISTS resultado;
 CREATE TABLE resultado (
@@ -217,10 +244,41 @@ END //
 
 DELIMITER ;
 
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS MediaPontuacaoPorDisciplina //
+
+CREATE PROCEDURE MediaPontuacaoPorDisciplina()
+BEGIN
+    SELECT
+        d.nome AS disciplina,
+        -- Calcula o total de respostas corretas para a disciplina
+        COUNT(CASE WHEN ru.correta = 1 THEN 1 END) AS total_acertos,
+        -- Conta quantos questionários únicos foram respondidos para a disciplina
+        COUNT(DISTINCT r.idResultado) AS total_questionarios_respondidos,
+        -- Calcula a média de acertos por questionário respondido. Usa IFNULL para retornar 0 se não houver respostas.
+        IFNULL(
+            (COUNT(CASE WHEN ru.correta = 1 THEN 1 END) / COUNT(DISTINCT r.idResultado)),
+            0
+        ) AS media_acertos_por_questionario
+    FROM disciplina d
+    -- LEFT JOIN para incluir disciplinas mesmo que não tenham questionários ou resultados associados
+    LEFT JOIN questionario q ON d.idDisciplina = q.idDisciplina
+    LEFT JOIN resultado r ON q.idQuestionario = r.idQuestionario
+    LEFT JOIN respostas_usuario ru ON r.idResultado = ru.idResultado
+    -- Agrupa os resultados por disciplina para calcular as métricas
+    GROUP BY d.idDisciplina, d.nome
+    -- Ordena para mostrar as disciplinas com melhor desempenho primeiro
+    ORDER BY media_acertos_por_questionario DESC;
+END //
+
+DELIMITER ;
+
 CREATE OR REPLACE VIEW ranking AS
 SELECT 
     u.idUsuario,
     u.pontuacao,
     RANK() OVER (ORDER BY u.pontuacao DESC) AS posicao
 FROM usuarios u order by posicao limit 10;
+
 
