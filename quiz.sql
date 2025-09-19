@@ -144,6 +144,7 @@ CREATE TABLE respostas_usuario (
 
 DELIMITER //
 
+DROP TABLE IF EXISTS usuarios_questionarios;
 CREATE TABLE usuarios_questionarios ( 
   idUsuario INT NOT NULL,
   idQuestionario INT NOT NULL,
@@ -371,4 +372,5 @@ END //
 
 DELIMITER ;
     
+
 
