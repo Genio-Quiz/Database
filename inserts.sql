@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS usuarios_questionarios;
-CREATE TABLE usuarios_questionarios (
-  idUsuario INT NOT NULL,
-  idQuestionario INT NOT NULL,
-  total_acertos INT DEFAULT 0,
-  total_erros INT DEFAULT 0,
-  tempo_medio_segundos FLOAT DEFAULT 0,
-  tentativas INT DEFAULT 0,
-  PRIMARY KEY (idUsuario, idQuestionario),
-  CONSTRAINT FK_usuarios_questionarios_usuario FOREIGN KEY (idUsuario) REFERENCES usuarios (idUsuario) ON DELETE CASCADE,
-  CONSTRAINT FK_usuarios_questionarios_questionario FOREIGN KEY (idQuestionario) REFERENCES questionario (idQuestionario) ON DELETE CASCADE
-);
-
 INSERT INTO curso (nome) VALUES
 ('Engenharia de Software'),
 ('Direito'),
