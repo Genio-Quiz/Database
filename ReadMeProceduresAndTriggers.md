@@ -33,7 +33,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ⏳ (Samuel) |
 | Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ⌛ (Gabriel K.) |
 | Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ✅ (Lucas) |
-| Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ❌ |
+| Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ⏳(Ariel) |
 
 ---
 
