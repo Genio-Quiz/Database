@@ -1,8 +1,6 @@
 CREATE database if not exists app_db;
 use app_db;
 
-
-
 CREATE TABLE if not exists curso (
   idCurso INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(30) NOT NULL
@@ -16,7 +14,6 @@ CREATE TABLE if not exists curso_log (
   data_acao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
 DELIMITER //
 CREATE TRIGGER log_after_insert_curso
 AFTER INSERT ON curso
@@ -26,7 +23,6 @@ BEGIN
   VALUES ('INSERT', NEW.idCurso, NEW.nome);
 END //
 DELIMITER ;
-
 
 DROP TRIGGER IF EXISTS log_after_insert_disciplina;
 DROP TABLE IF EXISTS disciplina_log;
@@ -48,7 +44,6 @@ CREATE TABLE disciplina_log (
   data_acao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
 DELIMITER //
 CREATE TRIGGER log_after_insert_disciplina
 AFTER INSERT ON disciplina
@@ -59,7 +54,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
 DROP TABLE IF EXISTS questionario;
 CREATE TABLE questionario (
   idQuestionario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +61,6 @@ CREATE TABLE questionario (
   idDisciplina INT NOT NULL,
   CONSTRAINT FK_questionario_disciplina FOREIGN KEY (idDisciplina) REFERENCES disciplina (idDisciplina)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 DROP TABLE IF EXISTS questoes;
 CREATE TABLE questoes (
@@ -78,7 +71,6 @@ CREATE TABLE questoes (
   CONSTRAINT FK_questoes_disciplina FOREIGN KEY (idDisciplina) REFERENCES disciplina (idDisciplina) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
 DROP TABLE IF EXISTS usuarios;
 CREATE TABLE usuarios (
   idUsuario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -86,7 +78,7 @@ CREATE TABLE usuarios (
   apelido VARCHAR(20) NOT NULL,
   senha VARCHAR(255) NOT NULL,
   admin TINYINT NOT NULL DEFAULT 0,
-  pontuacao INT NOT NULL DEFAULT 0,
+  pontuacao_geral INT NOT NULL DEFAULT 0,
   criadoEm TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY IDX_email (email),
   UNIQUE KEY IDX_apelido (apelido)
@@ -103,21 +95,17 @@ CREATE TABLE IF NOT EXISTS usuarios_pontuacao_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DELIMITER //
-
 DROP TRIGGER IF EXISTS log_before_update_pontuacao_usuario //
 
 CREATE TRIGGER log_before_update_pontuacao_usuario
 BEFORE UPDATE ON usuarios
 FOR EACH ROW
 BEGIN
-    -- Verifica se o valor da coluna 'pontuacao' foi alterado.
-    IF OLD.pontuacao <> NEW.pontuacao THEN
-        -- Insere um registro na tabela de log com os detalhes da alteração.
+    IF OLD.pontuacao_geral <> NEW.pontuacao_geral THEN
         INSERT INTO usuarios_pontuacao_log (idUsuario, pontuacao_antiga, pontuacao_nova, alterado_por)
-        VALUES (OLD.idUsuario, OLD.pontuacao, NEW.pontuacao, USER());
+        VALUES (OLD.idUsuario, OLD.pontuacao_geral, NEW.pontuacao_geral, USER());
     END IF;
 END //
-
 DELIMITER ;
 
 DROP TABLE IF EXISTS resultado;
@@ -131,7 +119,6 @@ CREATE TABLE resultado (
   CONSTRAINT FK_resultado_questionario FOREIGN KEY (idQuestionario) REFERENCES questionario (idQuestionario) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
 DROP TABLE IF EXISTS alternativas;
 CREATE TABLE alternativas (
   idAlternativa INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -140,7 +127,6 @@ CREATE TABLE alternativas (
   idQuestao INT NOT NULL,
   CONSTRAINT FK_alternativas_questao FOREIGN KEY (idQuestao) REFERENCES questoes (idQuestao) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 DROP TABLE IF EXISTS respostas_usuario;
 CREATE TABLE respostas_usuario (
@@ -155,8 +141,6 @@ CREATE TABLE respostas_usuario (
   CONSTRAINT FK_respostas_usuario_idAlternativa FOREIGN KEY (idAlternativa) REFERENCES alternativas (idAlternativa) ON DELETE CASCADE,
   CONSTRAINT FK_respostas_usuario_idResultado FOREIGN KEY (idResultado) REFERENCES resultado (idResultado) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 
 DELIMITER //
 
@@ -213,14 +197,12 @@ BEGIN
     WHERE idUsuario = p_idUsuario;
 END //
 
-DELIMITER ;
+DELIMITER //
 
 DELIMITER //
 
-
 ALTER TABLE questionario
 ADD COLUMN click INT NOT NULL DEFAULT 0;
-
 
 DROP PROCEDURE IF EXISTS IncrementarClickQuestionario //
 CREATE PROCEDURE IncrementarClickQuestionario(IN p_idQuestionario INT)
@@ -230,7 +212,7 @@ BEGIN
     WHERE idQuestionario = p_idQuestionario;
 END //
 
-DELIMITER ;
+DELIMITER //
 
 DELIMITER //
 
@@ -242,7 +224,7 @@ BEGIN
     WHERE idUsuario = p_idUsuario;
 END //
 
-DELIMITER ;
+DELIMITER //
 
 DELIMITER //
 
@@ -277,8 +259,99 @@ DELIMITER ;
 CREATE OR REPLACE VIEW ranking AS
 SELECT 
     u.idUsuario,
-    u.pontuacao,
-    RANK() OVER (ORDER BY u.pontuacao DESC) AS posicao
-FROM usuarios u order by posicao limit 10;
+    u.pontuacao_geral,
+    RANK() OVER (ORDER BY u.pontuacao_geral DESC) AS posicao
+FROM usuarios u ORDER BY posicao LIMIT 10;
 
+DELIMITER //
 
+DROP TRIGGER IF EXISTS after_insert_resultado //
+
+CREATE TRIGGER after_insert_resultado
+AFTER INSERT ON resultado
+FOR EACH ROW
+BEGIN
+    DECLARE totalAcertos INT;
+    DECLARE totalErros INT;
+    DECLARE tempoMedio FLOAT;
+    DECLARE tentativas INT;
+
+    SELECT COUNT(*) INTO totalAcertos
+    FROM respostas_usuario
+    WHERE idUsuario = NEW.idUsuario AND idQuestao IN (
+        SELECT idQuestao FROM questoes WHERE idDisciplina = (
+            SELECT idDisciplina FROM questionario WHERE idQuestionario = NEW.idQuestionario
+        )
+    ) AND correta = 1;
+
+    SELECT COUNT(*) INTO totalErros
+    FROM respostas_usuario
+    WHERE idUsuario = NEW.idUsuario AND idQuestao IN (
+        SELECT idQuestao FROM questoes WHERE idDisciplina = (
+            SELECT idDisciplina FROM questionario WHERE idQuestionario = NEW.idQuestionario
+        )
+    ) AND correta = 0;
+
+    SELECT AVG(tempoSegundos) INTO tempoMedio
+    FROM resultado
+    WHERE idUsuario = NEW.idUsuario AND idQuestionario = NEW.idQuestionario;
+
+    SELECT COUNT(*) INTO tentativas
+    FROM resultado
+    WHERE idUsuario = NEW.idUsuario AND idQuestionario = NEW.idQuestionario;
+
+    INSERT INTO usuarios_questionarios (idUsuario, idQuestionario, total_acertos, total_erros, tempo_medio_segundos, tentativas)
+    VALUES (NEW.idUsuario, NEW.idQuestionario, totalAcertos, totalErros, tempoMedio, tentativas)
+    ON DUPLICATE KEY UPDATE
+        total_acertos = totalAcertos,
+        total_erros = totalErros,
+        tempo_medio_segundos = tempoMedio,
+        tentativas = tentativas;
+
+    UPDATE usuarios
+    SET pontuacao_geral = pontuacao_geral + COALESCE((
+        SELECT SUM(correta) FROM respostas_usuario WHERE idResultado = NEW.idResultado
+    ), 0)
+    WHERE idUsuario = NEW.idUsuario;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS MelhorResultadoUsuarioPorDisciplina //
+
+CREATE PROCEDURE MelhorResultadoUsuarioPorDisciplina(IN p_idUsuario INT)
+BEGIN
+    -- Utiliza uma CTE (Common Table Expression) para primeiro calcular a pontuação de cada tentativa.
+    -- Isso organiza a consulta, tornando-a mais legível.
+    WITH PontuacaoPorResultado AS (
+        SELECT
+            idResultado,
+            -- Conta o número de acertos (onde correta = 1) para cada resultado.
+            COUNT(CASE WHEN correta = 1 THEN 1 END) AS pontuacao
+        FROM respostas_usuario
+        GROUP BY idResultado
+    )
+    -- A consulta principal junta as informações para apresentar o resultado final.
+    SELECT
+        u.apelido,
+        d.nome AS disciplina,
+        -- MAX() encontra a maior pontuação entre todas as tentativas do usuário na mesma disciplina.
+        MAX(pr.pontuacao) AS maior_pontuacao
+    FROM usuarios u
+    -- Junta as tabelas para conectar o usuário aos seus resultados, questionários e disciplinas.
+    JOIN resultado r ON u.idUsuario = r.idUsuario
+    JOIN PontuacaoPorResultado pr ON r.idResultado = pr.idResultado
+    JOIN questionario q ON r.idQuestionario = q.idQuestionario
+    JOIN disciplina d ON q.idDisciplina = d.idDisciplina
+    -- Filtra os resultados para o usuário específico passado como parâmetro.
+    WHERE u.idUsuario = p_idUsuario
+    -- Agrupa os dados para que a função MAX() funcione por disciplina.
+    GROUP BY u.apelido, d.nome
+    -- Ordena para mostrar as disciplinas com as maiores pontuações primeiro.
+    ORDER BY maior_pontuacao DESC;
+END //
+
+DELIMITER ;
+    
