@@ -142,10 +142,8 @@ CREATE TABLE respostas_usuario (
   CONSTRAINT FK_respostas_usuario_idResultado FOREIGN KEY (idResultado) REFERENCES resultado (idResultado) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-DELIMITER //
-
 DROP TABLE IF EXISTS usuarios_questionarios;
-CREATE TABLE usuarios_questionarios ( 
+CREATE TABLE usuarios_questionarios (
   idUsuario INT NOT NULL,
   idQuestionario INT NOT NULL,
   total_acertos INT DEFAULT 0,
@@ -155,17 +153,15 @@ CREATE TABLE usuarios_questionarios (
   PRIMARY KEY (idUsuario, idQuestionario),
   CONSTRAINT FK_usuarios_questionarios_usuario FOREIGN KEY (idUsuario) REFERENCES usuarios (idUsuario) ON DELETE CASCADE,
   CONSTRAINT FK_usuarios_questionarios_questionario FOREIGN KEY (idQuestionario) REFERENCES questionario (idQuestionario) ON DELETE CASCADE
-)
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DELIMITER //
-
 
 DROP PROCEDURE IF EXISTS HistoricoResultadosUsuario //
 
 CREATE PROCEDURE HistoricoResultadosUsuario(IN p_idUsuario INT)
 BEGIN
-    SELECT 
+    SELECT
         r.dataExecucao AS data,
         COUNT(CASE WHEN ru.correta = 1 THEN 1 END) AS pontuacao,
         r.tempoSegundos AS tempo,
@@ -183,13 +179,13 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS TopQuestoesRevisao //
 CREATE PROCEDURE TopQuestoesRevisao()
 BEGIN
-    SELECT 
+    SELECT
         q.idQuestao,
         q.enunciado,
         COUNT(ru.idResposta) AS vezes_errada
     FROM questoes q
-    JOIN respostas_usuario ru 
-        ON q.idQuestao = ru.idQuestao 
+    JOIN respostas_usuario ru
+        ON q.idQuestao = ru.idQuestao
        AND ru.correta = 0
     GROUP BY q.idQuestao, q.enunciado
     ORDER BY vezes_errada DESC
@@ -214,7 +210,7 @@ BEGIN
     WHERE idUsuario = p_idUsuario;
 END //
 
-DELIMITER //
+DELIMITER ;
 
 DELIMITER //
 
@@ -229,7 +225,7 @@ BEGIN
     WHERE idQuestionario = p_idQuestionario;
 END //
 
-DELIMITER //
+DELIMITER ;
 
 DELIMITER //
 
@@ -241,7 +237,7 @@ BEGIN
     WHERE idUsuario = p_idUsuario;
 END //
 
-DELIMITER //
+DELIMITER ;
 
 DELIMITER //
 
@@ -274,11 +270,11 @@ END //
 DELIMITER ;
 
 CREATE OR REPLACE VIEW ranking AS
-SELECT 
+SELECT
     u.idUsuario,
-    u.pontuacao_geral,
-    RANK() OVER (ORDER BY u.pontuacao_geral DESC) AS posicao
-FROM usuarios u ORDER BY posicao LIMIT 10;
+     u.pontuacao_geral,
+    RANK() OVER (ORDER BY  u.pontuacao_geral DESC) AS posicao
+FROM usuarios u order by posicao limit 10;
 
 DELIMITER //
 
@@ -371,6 +367,3 @@ BEGIN
 END //
 
 DELIMITER ;
-    
-
-
