@@ -1,4 +1,3 @@
-
 INSERT INTO curso (nome) VALUES
 ('Engenharia de Software'),
 ('Direito'),
@@ -412,7 +411,7 @@ INSERT INTO alternativas (texto, estaCorreta, idQuestao) VALUES
 ('Fenômeno exclusivo de regressão linear', 0, 50);
 
 
-INSERT INTO usuarios (email, apelido, senha, admin, pontuacao) VALUES
+INSERT INTO usuarios (email, apelido, senha, admin, pontuacao_geral) VALUES
 ('ana.silva@email.com',        'ana.silva',     'senha123',   0, 120),
 ('joao.souza@email.com',       'joao.souza',    '123senha',   0, 300),
 ('maria.oliveira@email.com',   'maria.olive',   'pass123',    0, 250),
