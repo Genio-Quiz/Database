@@ -30,7 +30,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Contador de clicks | Adicionar um campo click na tabela questionarios e uma procedure para aumentar em +1 esse contador | ✅ (Lucas) |
 | Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ⏳ (Samuel) |
 | Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ✅ (Lucas) |
-| Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ⏳ (Samuel) |
+| Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ✅ (Samuel) |
 | Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ⌛ (Gabriel K.) |
 | Top Questões de Revisão | Identificar as questões mais erradas para sugerir revisão. | ✅ (Lucas) |
 | Melhor Resultado do Usuário em Cada Disciplina | Mostrar a maior pontuação já alcançada por usuário em cada disciplina. | ⏳(Gabriel K.) |
