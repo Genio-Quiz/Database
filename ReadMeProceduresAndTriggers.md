@@ -28,7 +28,7 @@ O objetivo é **padronizar operações comuns** (cadastro, consulta e relatório
 | Ranking por Disciplina | Retornar os usuários com maior pontuação em uma disciplina específica. | ❌ |
 | Alterar senha | Pede uma nova senha e altera o campo senha de um usuario especifico. | ✅ (Lucas) |
 | Contador de clicks | Adicionar um campo click na tabela questionarios e uma procedure para aumentar em +1 esse contador | ✅ (Lucas) |
-| Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ⏳ (Samuel) |
+| Estatísticas de Questão | Retornar taxa de acerto/erro de uma questão específica. | ✅ (Samuel) |
 | Histórico de Resultados de um Usuário | Listar execuções de quizzes (data, pontuação, tempo). | ✅ (Lucas) |
 | Média de Pontuação por Usuário | Calcular a média de pontos obtidos por cada usuário. | ✅ (Samuel) |
 | Média de Pontuação por Disciplina | Identificar disciplinas com maior/menor desempenho médio. | ⌛ (Gabriel K.) |
